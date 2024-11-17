@@ -22,10 +22,12 @@
 </template>
 
 <script lang="ts">
-	import { computed, defineComponent } from "vue";
-	import Temporizador from './Temporizador.vue'
-	import { useStore } from 'vuex'
-	import { key } from "@/store";
+import { computed, defineComponent } from "vue";
+import Temporizador from './Temporizador.vue';
+import { useStore } from 'vuex';
+import { key } from "@/store";
+import { typeNotification } from "@/interfaces/INotificacao";
+import { NotificacaoMixin } from "@/mixins/Notificar";
 
 	export default defineComponent({
 		name: "Formulário",
@@ -43,18 +45,27 @@
 			const store = useStore(key);
 
 			return {
+				store,
 				projetos: computed(() => store.state.projetos)
 			}
 		},
+		mixins: [ NotificacaoMixin ],
 		methods: {
 			finalizarTarefa(tempoDecorrido: number): void {
+				const projeto = this.projetos.find((p) => p.id == this.idProjeto);
+				
+				if(!projeto) {
+					this.notificar("Ops!", "Selecione um projeto antes de finalizar a tarefa!", typeNotification.ERROR);
+					return; 
+				}
+
 				this.$emit('aoSalvarTarefa', {
 					duracaoEmSegundos: tempoDecorrido,
 					descricao: this.descricao,
-					projeto: this.projetos.find(proj => proj.id == this.idProjeto)
+					projeto: projeto
 				})
 				this.descricao = ''
-			}
+			},		
 		}
 	});
 </script>

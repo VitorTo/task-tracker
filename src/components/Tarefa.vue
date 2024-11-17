@@ -2,6 +2,11 @@
   <Box>
     <div class="columns">
       <div class="column is-7 is-uppercase">{{ tarefa.descricao || 'Tarefa sem descrição' }}</div>
+      <div class="column is-3 is-uppercase">
+          <span class="tag is-primary">
+            {{ tarefa.projeto?.nome || 'N/D' }}
+          </span>
+        </div>
       <div class="column">
         <Cronometro :tempoEmSegundos="tarefa.duracaoEmSegundos"/>
       </div>
